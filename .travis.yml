@@ -1,10 +1,35 @@
-language: python
-install: "pip install -r requirements.txt"
+language: java
+jdk:
+  - openjdk8
+  - openjdk9
+
+services:
+  - docker
+
+env:
+  matrix:
+  - COVERAGE=0.05 BUILD_TARGET=./monolithic/ui
+  - COVERAGE=0.14 BUILD_TARGET=./monolithic/service/cart
+  - COVERAGE=0.0 BUILD_TARGET=./monolithic/service/user
+  - COVERAGE=0.36 BUILD_TARGET=./monolithic/repository/order
+  - COVERAGE=0.0 BUILD_TARGET=./monolithic/repository/cart
+  - COVERAGE=0.12 BUILD_TARGET=./monolithic/repository/product
+  - COVERAGE=0.31 BUILD_TARGET=./monolithic/repository/user
+  global:
+  - DOCKER_LOGIN=takintosh
+  - secure: AAAAB3NzaC1yc2EAAAADAQABAAABAQDhp5ermYGzD7xy3KOHx53Ym9atrrHM8kzFcy0TNBEpfE5y+IrM6gZ5LvZkOfr3oHjS0M/PVOt1e3wGqk45/KTgRaXX0GU8Mn03I7fQBQRB1auWrWTgaZl28BtwAv6PROjAHHxQjiEah8sJhOnU3WXf4UJAXinkUFlP5EkJYNC/xoQpYlM6r57C3u4GA5t9MyNG08t0q6IWtFiDzx0KYdopw6z7Nb7vBKfr+2uwfnH8cXwu3JJCBO/nRNMQRSU40ih5d9L2pLl+ClXKCcB7uzF7t/V5qFCsARmg/0WoCFA9SNnreT1zc7hsDHJFgZji0VbZwBs065VE4VeogkbrAnWl
+
+install:
+  - "./gradlew clean jar"
 
 script:
-  # Run ANSIBLE checks
-  # - ANSIBLE0008: Disabled for use of sudo warnings - to address
-  # - ANSIBLE0011: Disabled for all tasks which should be named
-  # - ANSIBLE0012: Disabled (should not change if nothings needs doing) - to address
-  # - ANSIBLE0013: Disabled - few uses of shell commands - to address
-  - find vagrant/provision -name "*.yml" -exec ansible-lint -x ANSIBLE008,ANSIBLE0011,ANSIBLE0012,ANSIBLE0013  {} +
+  - "./gradlew -p $BUILD_TARGET check"
+
+after_success:
+  - find . -name jacocoTestReport.csv|xargs cat|awk -F',' '{print $3" "$4" "$5}'
+
+deploy:
+  provider: script
+  script: bash -c "echo \"${DOCKER_PASSWORD}\" | docker login --username \"${DOCKER_LOGIN}\" --password-stdin ;"
+  on:
+    all_branches: true
