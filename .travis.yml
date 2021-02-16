@@ -1,6 +1,9 @@
 language: java
 jdk: openjdk8
 
+env:
+  - COVERAGE=0.30
+
 install:
   - ./gradlew clean jar
 
@@ -13,7 +16,7 @@ after_success:
 
 before_deploy:
   - ./gradlew test jacocoTestCoverageVerification
-  
+
 deploy:
   provider: script
   script: echo 'WIP'
