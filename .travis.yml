@@ -17,7 +17,7 @@ env:
   - COVERAGE=0.31 BUILD_TARGET=./monolithic/repository/user
   global:
   - DOCKER_LOGIN=takintosh
-  - secure: 68eeead6-b3b4-4e87-a4e5-d165200c6e66
+  - secure: AAAAB3NzaC1yc2EAAAADAQABAAABAQDhp5ermYGzD7xy3KOHx53Ym9atrrHM8kzFcy0TNBEpfE5y+IrM6gZ5LvZkOfr3oHjS0M/PVOt1e3wGqk45/KTgRaXX0GU8Mn03I7fQBQRB1auWrWTgaZl28BtwAv6PROjAHHxQjiEah8sJhOnU3WXf4UJAXinkUFlP5EkJYNC/xoQpYlM6r57C3u4GA5t9MyNG08t0q6IWtFiDzx0KYdopw6z7Nb7vBKfr+2uwfnH8cXwu3JJCBO/nRNMQRSU40ih5d9L2pLl+ClXKCcB7uzF7t/V5qFCsARmg/0WoCFA9SNnreT1zc7hsDHJFgZji0VbZwBs065VE4VeogkbrAnWl
 
 install:
   - "./gradlew clean jar"
